@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rooftop Gardening Assistant</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f0f8f5;
+      color: #333;
+    }
+    header {
+      background-color: #4caf50;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    main {
+      padding: 2rem;
+    }
+    section {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      max-width: 800px;
+      margin: 2rem auto;
+    }
+    h2 {
+      color: #4caf50;
+      text-align: center;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 1rem;
+      display: block;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.3rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 0.75rem 1.5rem;
+      background: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: block;
+      margin: 1rem auto;
+      font-size: 1rem;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌿 Rooftop Gardening Assistant</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>Get Your Personalized Gardening Suggestions</h2>
+
+      <div class="form-group">
+        <label for="roofSize">Roof Area (in square feet)</label>
+        <input type="number" id="roofSize" placeholder="e.g. 300" />
+      </div>
+
+      <div class="form-group">
+        <label for="eastObstruction">Are there tall buildings on the east side of your roof?</label>
+        <select id="eastObstruction">
+          <option value="none">No</option>
+          <option value="small">Small Building</option>
+          <option value="medium">Medium Building</option>
+          <option value="tall">Tall / High Building</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="southObstruction">Are there tall buildings on the south side of your roof?</label>
+        <select id="southObstruction">
+          <option value="none">No</option>
+          <option value="small">Small Building</option>
+          <option value="medium">Medium Building</option>
+          <option value="tall">Tall / High Building</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="season">Season right now?</label>
+        <select id="season">
+          <option value="summer">Summer</option>
+          <option value="rainy">Rainy</option>
+          <option value="winter">Winter</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="watering">Can you water the plants regularly?</label>
+        <select id="watering">
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="plantType">Do you want vegetables, fruits, or flowers?</label>
+        <select id="plantType">
+          <option value="vegetables">Vegetables</option>
+          <option value="fruits">Fruits</option>
+          <option value="flowers">Flowers</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="experience">Your Gardening Experience Level</label>
+        <select id="experience">
+          <option value="beginner">Beginner</option>
+          <option value="intermediate">Intermediate</option>
+          <option value="expert">Expert</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="sunlight">Approximate Daily Sunlight Duration (in hours)</label>
+        <input type="number" id="sunlight" placeholder="e.g. 6" />
+      </div>
+
+      <button id="suggestBtn">🌱 Suggest Me</button>
+    </section>
+  </main>
+</body>
+</html>
