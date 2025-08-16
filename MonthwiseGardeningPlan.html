@@ -1,0 +1,346 @@
+Monthwise planning:
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Month-wise Gardening Plan</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2f6f4;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      padding: 1.5rem;
+    }
+    header {
+      background-color: #4caf50;
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+    select {
+      width: 100%;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border: 2px solid #4caf50;
+      border-radius: 8px;
+      margin-top: 1rem;
+      margin-bottom: 2rem;
+    }
+    h2 {
+      color: #4caf50;
+      margin-top: 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+    }
+    th, td {
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #f5f5f5;
+    }
+    .checklist, .reminders {
+      margin-top: 1.2rem;
+    }
+    .checklist li {
+      margin: 0.5rem 0;
+      background: #f9f9f9;
+      padding: 0.8rem;
+      border-left: 4px solid #4caf50;
+      border-radius: 8px;
+    }
+    .reminders {
+      background: #fff3cd;
+      border-left: 4px solid #ff9800;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>🌱 Month-wise Gardening Plan</header>
+
+    <label for="month-select">📆 Select a Month:</label>
+    <select id="month-select" onchange="updateCalendar()">
+      <option value="January">January</option>
+      <option value="February">February</option>
+      <option value="March">March</option>
+      <option value="April">April</option>
+      <option value="May">May</option>
+      <option value="June">June</option>
+      <option value="July">July</option>
+      <option value="August">August</option>
+      <option value="September">September</option>
+      <option value="October">October</option>
+      <option value="November">November</option>
+      <option value="December">December</option>
+    </select>
+
+    <div id="calendar-content">
+      <!-- Dynamic content will load here -->
+    </div>
+  </div>
+
+  <script>
+    const data = {
+      January: {
+        crops: [
+          { type: "Vegetables", examples: "Radish, Carrot, Cabbage, Beetroot", notes: "Cool-season crops thrive" },
+          { type: "Fruits", examples: "Strawberries, Citrus saplings", notes: "Ideal for planting" },
+          { type: "Herbs", examples: "Coriander, Parsley", notes: "Grow in partial sunlight" },
+          { type: "Flowers", examples: "Marigold, Petunia", notes: "Winter blooms" }
+        ],
+        tasks: [
+          "Prepare beds with compost (1-10 Jan)",
+          "Sow root veggies (11-20 Jan)",
+          "Transplant seedlings (21-31 Jan)"
+        ],
+        reminders: [
+          "💧 Water sparingly during cooler nights.",
+          "🌿 Protect delicate seedlings from frost."
+        ]
+      },
+      February: {
+        crops: [
+          { type: "Vegetables", examples: "Spinach, Peas, Broad beans", notes: "Harvest leafy greens early" },
+          { type: "Fruits", examples: "Guava saplings", notes: "Plant before summer heat" },
+          { type: "Herbs", examples: "Mint, Dill", notes: "Great month for herbs" },
+          { type: "Flowers", examples: "Zinnia, Cosmos", notes: "Sow late-winter flowers" }
+        ],
+        tasks: [
+          "Plant legumes (1-10 Feb)",
+          "Sow spinach seeds (11-20 Feb)",
+          "Apply organic mulch (21-28 Feb)"
+        ],
+        reminders: [
+          "☀️ Provide shade nets for tender herbs.",
+          "🌱 Prepare beds for summer crops."
+        ]
+      },
+      March: {
+        crops: [
+          { type: "Vegetables", examples: "Okra, Amaranth, Cucumber", notes: "Summer vegetables start" },
+          { type: "Fruits", examples: "Papaya seedlings, Melon", notes: "Start fruit crops in pots" },
+          { type: "Herbs", examples: "Basil, Mint", notes: "Good for partial sunlight areas" },
+          { type: "Flowers", examples: "Hibiscus, Marigold", notes: "Plant hardy flowers" }
+        ],
+        tasks: [
+          "Sow okra & cucumbers (1-15 Mar)",
+          "Transplant fruit saplings (16-25 Mar)",
+          "Apply compost fertilizer (26-31 Mar)"
+        ],
+        reminders: [
+          "🔥 Prepare shade for mid-day sun.",
+          "🚿 Water early mornings to avoid evaporation."
+        ]
+      },
+      April: {
+        crops: [
+          { type: "Vegetables", examples: "Eggplant, Bitter Gourd", notes: "Hot season crops" },
+          { type: "Fruits", examples: "Watermelon, Mango grafting", notes: "Ideal for fruits" },
+          { type: "Herbs", examples: "Lemongrass, Coriander", notes: "Frequent harvesting boosts growth" },
+          { type: "Flowers", examples: "Zinnia, Cosmos", notes: "Encourage blooms with deadheading" }
+        ],
+        tasks: [
+          "Mulch soil (1-7 Apr)",
+          "Sow summer vegetables (8-20 Apr)",
+          "Prune herbs & apply fertilizer (21-30 Apr)"
+        ],
+        reminders: [
+          "🔥 Keep soil moist during heat waves.",
+          "🧑‍🌾 Thin seedlings to avoid overcrowding."
+        ]
+      },
+      May: {
+        crops: [
+          { type: "Vegetables", examples: "Bottle gourd, Chili, Pumpkin", notes: "Pre-monsoon crops" },
+          { type: "Fruits", examples: "Mango saplings, Banana", notes: "Plant before heavy rains" },
+          { type: "Herbs", examples: "Holy Basil (Tulsi)", notes: "Heat tolerant" },
+          { type: "Flowers", examples: "Portulaca, Sunflower", notes: "Summer hardy flowers" }
+        ],
+        tasks: [
+          "Prepare drainage systems (1-10 May)",
+          "Sow gourds & chilies (11-20 May)",
+          "Apply organic fertilizers (21-31 May)"
+        ],
+        reminders: [
+          "🌧️ Get ready for monsoon rains.",
+          "💨 Stake tall plants against wind damage."
+        ]
+      },
+      June: {
+        crops: [
+          { type: "Vegetables", examples: "Maize, Paddy (rice)", notes: "Monsoon crops" },
+          { type: "Fruits", examples: "Guava, Pineapple", notes: "Rain-friendly fruit plants" },
+          { type: "Herbs", examples: "Turmeric, Ginger", notes: "Plant rhizomes" },
+          { type: "Flowers", examples: "Water lily", notes: "Best for water gardens" }
+        ],
+        tasks: [
+          "Sow maize seeds (1-10 Jun)",
+          "Transplant paddy seedlings (11-20 Jun)",
+          "Plant turmeric & ginger (21-30 Jun)"
+        ],
+        reminders: [
+          "🌧️ Raise beds to avoid waterlogging.",
+          "🐛 Watch for pests in wet weather."
+        ]
+      },
+      July: {
+        crops: [
+          { type: "Vegetables", examples: "Okra, Bottle gourd, Sponge gourd", notes: "Continue monsoon planting" },
+          { type: "Fruits", examples: "Jackfruit, Banana", notes: "Harvest season for some fruits" },
+          { type: "Herbs", examples: "Lemongrass, Holy Basil", notes: "Revitalized in moist air" },
+          { type: "Flowers", examples: "Hibiscus, Water lilies", notes: "Thrive in rainy months" }
+        ],
+        tasks: [
+          "Sow gourds again (1-10 Jul)",
+          "Stake climbing plants (11-20 Jul)",
+          "Check drainage (21-31 Jul)"
+        ],
+        reminders: [
+          "🐌 Protect young seedlings from snails.",
+          "🌧️ Reduce watering during heavy rain."
+        ]
+      },
+      August: {
+        crops: [
+          { type: "Vegetables", examples: "Sweet corn, Spinach, Leafy greens", notes: "Quick leafy crops" },
+          { type: "Fruits", examples: "Papaya, Pineapple", notes: "Partial sun fruits" },
+          { type: "Herbs", examples: "Mint, Coriander", notes: "Grow under partial shade" },
+          { type: "Flowers", examples: "Dahlia bulbs, Water lilies", notes: "Plant for late monsoon" }
+        ],
+        tasks: [
+          "Sow spinach (1-10 Aug)",
+          "Transplant dahlias (11-20 Aug)",
+          "Mulch beds to retain moisture (21-31 Aug)"
+        ],
+        reminders: [
+          "🌱 Thin seedlings to prevent overcrowding.",
+          "🌧️ Prepare for retreating monsoon rains."
+        ]
+      },
+      September: {
+        crops: [
+          { type: "Vegetables", examples: "Pumpkin, Cucumber, Gourds", notes: "Late kharif crops" },
+          { type: "Fruits", examples: "Lychee, Banana", notes: "Best after peak rains" },
+          { type: "Herbs", examples: "Lemongrass, Basil", notes: "Enjoy retreating moisture" },
+          { type: "Flowers", examples: "Zinnia, Marigold", notes: "Prepare for winter blooms" }
+        ],
+        tasks: [
+          "Plant pumpkins (1-10 Sep)",
+          "Prepare winter beds (11-20 Sep)",
+          "Apply compost (21-30 Sep)"
+        ],
+        reminders: [
+          "🍂 Remove dead plants from rainy season.",
+          "☀️ Start preparing for dry season."
+        ]
+      },
+      October: {
+        crops: [
+          { type: "Vegetables", examples: "Cabbage, Cauliflower, Carrot", notes: "Cool-season vegetables" },
+          { type: "Fruits", examples: "Strawberries", notes: "Plant early runners" },
+          { type: "Herbs", examples: "Coriander, Fenugreek", notes: "Prefers cool days" },
+          { type: "Flowers", examples: "Pansy, Petunia", notes: "Winter bloomers" }
+        ],
+        tasks: [
+          "Sow cabbage & carrots (1-10 Oct)",
+          "Mulch and water moderately (11-20 Oct)",
+          "Plant strawberry runners (21-31 Oct)"
+        ],
+        reminders: [
+          "❄️ Prepare frost protection for seedlings.",
+          "🌿 Regularly weed winter beds."
+        ]
+      },
+      November: {
+        crops: [
+          { type: "Vegetables", examples: "Peas, Broad beans, Mustard greens", notes: "Perfect for cool weather" },
+          { type: "Fruits", examples: "Guava, Citrus", notes: "Harvest time" },
+          { type: "Herbs", examples: "Dill, Parsley", notes: "Thrives in winter sun" },
+          { type: "Flowers", examples: "Snapdragon, Marigold", notes: "Winter blossoms" }
+        ],
+        tasks: [
+          "Sow peas & beans (1-10 Nov)",
+          "Plant mustard greens (11-20 Nov)",
+          "Harvest citrus (21-30 Nov)"
+        ],
+        reminders: [
+          "❄️ Mulch roots to retain warmth.",
+          "💧 Water only when soil feels dry."
+        ]
+      },
+      December: {
+        crops: [
+          { type: "Vegetables", examples: "Onion, Garlic, Radish", notes: "Root vegetables thrive" },
+          { type: "Fruits", examples: "Citrus harvesting", notes: "Continue harvesting oranges" },
+          { type: "Herbs", examples: "Coriander, Dill", notes: "Good for cooler months" },
+          { type: "Flowers", examples: "Pansy, Petunia", notes: "Peak winter blooms" }
+        ],
+        tasks: [
+          "Plant onions & garlic (1-10 Dec)",
+          "Sow radishes (11-20 Dec)",
+          "Harvest oranges (21-31 Dec)"
+        ],
+        reminders: [
+          "🎄 Protect plants from cold drafts.",
+          "🌱 Prep beds for next year’s cycle."
+        ]
+      }
+    };
+
+    function updateCalendar() {
+      const month = document.getElementById('month-select').value;
+      const content = document.getElementById('calendar-content');
+      const monthData = data[month];
+
+      if (!monthData) {
+        content.innerHTML = "<p>No data available for this month yet.</p>";
+        return;
+      }
+
+      let html = `<h2>📅 ${month} - What to Plant</h2><table><tr><th>Crop Type</th><th>Examples</th><th>Notes</th></tr>`;
+      monthData.crops.forEach(crop => {
+        html += `<tr><td>${crop.type}</td><td>${crop.examples}</td><td>${crop.notes}</td></tr>`;
+      });
+      html += `</table>`;
+
+      html += `<h2>✅ Task Checklist</h2><ul class="checklist">`;
+      monthData.tasks.forEach(task => {
+        html += `<li>${task}</li>`;
+      });
+      html += `</ul>`;
+
+      html += `<h2>🔔 Seasonal Reminders</h2><div class="reminders">`;
+      monthData.reminders.forEach(reminder => {
+        html += `<p>${reminder}</p>`;
+      });
+      html += `</div>`;
+
+      content.innerHTML = html;
+    }
+
+    window.onload = updateCalendar;
+  </script>
+</body>
+</html>

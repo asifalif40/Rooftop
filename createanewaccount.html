@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Create Account • Rooftop Gardening Portal</title>
+<style>
+  :root{
+    --brand:#2e7d32;
+    --ink:#111827;
+    --muted:#6b7280;
+    --bg:#f7faf9;
+    --card:#ffffff;
+    --line:#e5e7eb;
+    --danger:#dc2626;
+    --ok:#059669;
+    --focus: #2563eb;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui, Segoe UI, Roboto, Arial, sans-serif;background:var(--bg);color:var(--ink)}
+  header{
+    background:var(--brand);color:#fff;padding:16px 20px;display:flex;align-items:center;gap:12px
+  }
+  header h1{margin:0;font-size:1.125rem}
+  main{max-width:880px;margin:24px auto;padding:0 16px}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;
+    box-shadow:0 8px 24px rgba(0,0,0,.05)
+  }
+  h2{margin:0 0 10px;font-size:1.125rem}
+  p.sub{margin:0 0 16px;color:var(--muted)}
+  form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .full{grid-column:1/-1}
+  label{display:block;font-size:.9rem;margin-bottom:6px}
+  input, select, textarea{
+    width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit;color:inherit
+  }
+  input:focus, select:focus, textarea:focus{outline:2px solid var(--focus);outline-offset:2px}
+  .help{font-size:.8rem;color:var(--muted);margin-top:4px}
+  .err-text{font-size:.82rem;color:var(--danger);margin-top:6px;display:none}
+  .ok-text{font-size:.82rem;color:var(--ok);margin-top:6px;display:none}
+  .error-summary{
+    border:1px solid var(--danger); background:#fff1f2; color:#7f1d1d; border-radius:12px;
+    padding:10px 12px; margin-bottom:14px; display:none
+  }
+  .row{display:flex;align-items:center;gap:10px}
+  .avatar{width:84px;height:84px;border-radius:50%;object-fit:cover;border:1px solid var(--line);background:#f3f4f6}
+  .strength{height:8px;border-radius:6px;background:#e5e7eb;overflow:hidden;margin-top:6px}
+  .strength > span{display:block;height:100%;width:0;background:linear-gradient(90deg,#ef4444,#f59e0b,#10b981)}
+  .hr{height:1px;background:var(--line);grid-column:1/-1;margin:4px 0}
+  .actions{grid-column:1/-1;display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
+  button, .btn{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font:inherit}
+  .primary{background:var(--brand);color:#fff}
+  .ghost{background:#fff;border:1px solid var(--line);color:#111827;text-decoration:none}
+  .hidden{display:none !important}
+  .pill{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:.9rem;background:#fff}
+  @media (max-width:720px){form{grid-template-columns:1fr}}
+  @media (prefers-color-scheme:dark){
+    body{background:#0b1410;color:#e6efe9}
+    .card{background:#0f1b15;border-color:#244233}
+    input, select, textarea{background:#09120e;border-color:#244233;color:#e6efe9}
+    .ghost{background:#09120e;border-color:#244233;color:#e6efe9}
+    .hr{background:#244233}
+    .error-summary{background:#311316;color:#fecaca;border-color:#dc2626}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>🌿 Rooftop Gardening Portal • Create a New Account</h1>
+</header>
+
+<main>
+  <section class="card">
+    <h2>Create Your Account</h2>
+    <p class="sub">Admin accounts aren’t created here. Choose <strong>User</strong> or <strong>Specialist</strong>.</p>
+
+    <!-- Error summary for accessibility -->
+    <div id="errorSummary" class="error-summary" role="alert" aria-live="assertive" tabindex="-1"></div>
+
+    <form id="form" novalidate>
+      <!-- Full Name -->
+      <div class="full">
+        <label for="fullName">Full Name *</label>
+        <input id="fullName" name="fullName" autocomplete="name" required />
+        <div class="err-text" data-err="fullName">Please enter your full name.</div>
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label for="email">Email Address *</label>
+        <input id="email" name="email" type="email" autocomplete="email" required />
+        <div class="err-text" data-err="email">Please enter a valid email.</div>
+        <div class="err-text" data-err="emailTaken">This email is already registered.</div>
+      </div>
+
+      <!-- Role -->
+      <div>
+        <label for="role">Select Role *</label>
+        <select id="role" name="role" required>
+          <option value="">— Choose —</option>
+          <option value="user">User</option>
+          <option value="specialist">Specialist</option>
+        </select>
+        <div class="err-text" data-err="role">Please choose User or Specialist.</div>
+      </div>
+
+      <!-- Phone (optional) -->
+      <div>
+        <label for="phone">Phone Number (optional)</label>
+        <input id="phone" name="phone" type="tel" inputmode="tel" pattern="^[0-9+\-\s()]{6,}$" />
+        <div class="help">Digits, +, -, spaces, parentheses allowed.</div>
+      </div>
+
+      <!-- Address / City (optional) -->
+      <div class="full">
+        <label for="address">Address / City (optional)</label>
+        <input id="address" name="address" autocomplete="address-level2" />
+      </div>
+
+      <!-- Avatar -->
+      <div class="full">
+        <label for="avatar">Profile Picture (optional)</label>
+        <div class="row">
+          <img id="avatarPreview" class="avatar" alt="Profile preview" />
+          <input id="avatar" name="avatar" type="file" accept="image/*" />
+        </div>
+        <div class="help">Preview only; a small thumbnail may be saved for demo (client-side).</div>
+      </div>
+
+      <div class="hr"></div>
+
+      <!-- Password -->
+      <div>
+        <label for="password">Password *</label>
+        <input id="password" name="password" type="password" autocomplete="new-password" minlength="8" required />
+        <div class="strength" aria-hidden="true"><span id="bar"></span></div>
+        <div class="help">Min 8 chars with upper, lower, and a number.</div>
+        <div class="err-text" data-err="password">Password must be at least 8 chars and include upper, lower, and a number.</div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div>
+        <label for="confirm">Confirm Password *</label>
+        <input id="confirm" name="confirm" type="password" autocomplete="new-password" required />
+        <div class="err-text" data-err="confirm">Passwords do not match.</div>
+        <div class="ok-text" data-ok="confirm">Passwords match ✓</div>
+      </div>
+
+      <div class="hr"></div>
+
+      <!-- Experience (User only) -->
+      <div id="expWrap" class="hidden">
+        <label for="experience">Experience Level (User)</label>
+        <select id="experience" name="experience">
+          <option value="">— Optional —</option>
+          <option>Beginner</option>
+          <option>Intermediate</option>
+          <option>Expert</option>
+        </select>
+      </div>
+
+      <!-- Specialization (Specialist only) -->
+      <div id="specWrap" class="hidden">
+        <label for="specialization">Specialization (Specialist)</label>
+        <select id="specialization" name="specialization">
+          <option value="">— Optional —</option>
+          <option>Vegetables</option>
+          <option>Fruits</option>
+          <option>Flowers</option>
+          <option>Herbs</option>
+          <option>Soil & Compost</option>
+        </select>
+      </div>
+
+      <!-- Terms -->
+      <div class="full">
+        <label for="terms" class="pill">
+          <input id="terms" type="checkbox" /> I agree to the Terms & Conditions *
+        </label>
+        <div class="err-text" data-err="terms">You must accept the Terms to continue.</div>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <a class="ghost btn" href="login.html">← Back to Login</a>
+        <button class="primary" type="submit">Create Account</button>
+      </div>
+    </form>
+  </section>
+</main>
+
+<script>
+  // ===== Helpers =====
+  const $  = (s)=>document.querySelector(s);
+  const $$ = (s)=>document.querySelectorAll(s);
+  const show = (el, yes=true)=> el.classList.toggle('hidden', !yes);
+  const setVisible = (q, v)=>{ const el = document.querySelector(q); if(el) el.style.display = v?'block':'none'; };
+
+  // ===== Elements =====
+  const form = $('#form');
+  const errorSummary = $('#errorSummary');
+  const role = $('#role');
+  const expWrap = $('#expWrap');
+  const specWrap = $('#specWrap');
+  const pwd = $('#password');
+  const confirmPwd = $('#confirm');
+  const bar = $('#bar');
+  const avatarInput = $('#avatar');
+  const avatarPreview = $('#avatarPreview');
+
+  // ===== Role-conditional fields =====
+  function updateRoleFields(){
+    const r = role.value;
+    show(expWrap, r === 'user');
+    show(specWrap, r === 'specialist');
+  }
+  role.addEventListener('change', updateRoleFields);
+
+  // ===== Avatar preview (limit read to ~200KB) =====
+  avatarInput.addEventListener('change', async (e)=>{
+    const f = e.target.files?.[0];
+    if(!f){ avatarPreview.removeAttribute('src'); return; }
+    if(f.size > 2 * 1024 * 1024){ // 2MB guard
+      alert('Please choose an image under 2MB.');
+      avatarInput.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = ev => avatarPreview.src = ev.target.result;
+    reader.readAsDataURL(f);
+  });
+
+  // ===== Password strength + matching =====
+  function strengthScore(s=''){
+    let score = 0;
+    if(s.length >= 8) score++;
+    if(/[A-Z]/.test(s)) score++;
+    if(/[a-z]/.test(s)) score++;
+    if(/[0-9]/.test(s)) score++;
+    return Math.min(score,4);
+  }
+  function renderStrength(){
+    bar.style.width = (strengthScore(pwd.value)/4*100)+'%';
+  }
+  function passwordsMatch(){
+    const ok = confirmPwd.value && (confirmPwd.value === pwd.value);
+    setVisible('[data-ok="confirm"]', ok);
+    setVisible('[data-err="confirm"]', !ok && confirmPwd.value.length>0);
+    return ok;
+  }
+  pwd.addEventListener('input', ()=>{ renderStrength(); passwordsMatch(); });
+  confirmPwd.addEventListener('input', passwordsMatch);
+
+  // ===== Validation =====
+  function emailValid(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+  function showErr(key, on){ setVisible(`[data-err="${key}"]`, !!on); }
+  function collectErrors(list){
+    if(!list.length){ errorSummary.style.display='none'; errorSummary.textContent=''; return; }
+    errorSummary.innerHTML = '<strong>Please fix the following:</strong><ul style="margin:.5rem 0;padding-left:1.2rem">'
+      + list.map(li=>`<li>${li}</li>`).join('') + '</ul>';
+    errorSummary.style.display='block';
+    errorSummary.focus();
+  }
+
+  // ===== Storage (demo) =====
+  const DB_KEY = 'rgp_users';
+  function loadUsers(){ try{ return JSON.parse(localStorage.getItem(DB_KEY)||'[]'); } catch { return []; } }
+  function saveUsers(db){ localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+
+  // Secure-ish hash (client-side demo only!):
+  async function sha256Hex(buffer){
+    const hash = await crypto.subtle.digest('SHA-256', buffer);
+    return [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+  function enc(str){ return new TextEncoder().encode(str); }
+  function randomSalt(len=16){
+    const a = new Uint8Array(len);
+    crypto.getRandomValues(a);
+    return [...a].map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+
+  // Small avatar saver (cap DataURL length)
+  function avatarDataURL(){
+    const src = avatarPreview?.src || '';
+    if(!src.startsWith('data:image/')) return '';
+    // Cap at ~200KB worth of base64 chars (about 270KB string)
+    if(src.length > 270_000) return '';
+    return src;
+  }
+
+  // ===== Submit =====
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+
+    // Read values
+    const data = {
+      fullName: $('#fullName').value.trim(),
+      email: $('#email').value.trim().toLowerCase(),
+      role: role.value,
+      phone: $('#phone').value.trim(),
+      address: $('#address').value.trim(),
+      experience: $('#experience')?.value || '',
+      specialization: $('#specialization')?.value || '',
+      terms: $('#terms').checked,
+      avatar: avatarDataURL()
+    };
+
+    // Validate
+    const errors = [];
+    if(!data.fullName){ showErr('fullName', true); errors.push('Full name is required.'); } else showErr('fullName', false);
+    if(!emailValid(data.email)){ showErr('email', true); errors.push('A valid email is required.'); } else showErr('email', false);
+    if(!['user','specialist'].includes(data.role)){ showErr('role', true); errors.push('Please choose a role (User or Specialist).'); } else showErr('role', false);
+
+    const pw = pwd.value;
+    const pwOk = pw.length>=8 && /[A-Z]/.test(pw) && /[a-z]/.test(pw) && /[0-9]/.test(pw);
+    showErr('password', !pwOk);
+    if(!pwOk) errors.push('Password must be 8+ chars with upper, lower, and a number.');
+
+    if(!passwordsMatch()) errors.push('Passwords must match.');
+
+    if(!data.terms){ showErr('terms', true); errors.push('You must accept the Terms & Conditions.'); } else showErr('terms', false);
+
+    // Unique email
+    const users = loadUsers();
+    const taken = users.some(u => u.email === data.email);
+    showErr('emailTaken', taken);
+    if(taken) errors.push('This email is already registered.');
+
+    collectErrors(errors);
+    if(errors.length) return;
+
+    // Hash & save (demo only)
+    const salt = randomSalt(16);
+    const hash = await sha256Hex(enc(salt + pw));
+
+    const user = {
+      id: crypto.randomUUID(),
+      fullName: data.fullName,
+      email: data.email,
+      role: data.role,
+      phone: data.phone,
+      address: data.address,
+      experience: data.role==='user' ? data.experience : '',
+      specialization: data.role==='specialist' ? data.specialization : '',
+      avatar: data.avatar,            // tiny dataURL or ''
+      passwordHash: hash,             // never store plain text
+      salt,                           // for demo; in production store salt server-side with hash
+      createdAt: new Date().toISOString()
+    };
+
+    users.push(user);
+    saveUsers(users);
+
+    // Minimal session handoff (optional)
+    // localStorage.setItem('rgp_lastSignupEmail', user.email);
+
+    alert('Account created successfully! You can now log in.');
+    window.location.href = 'login.html';
+  });
+
+  // Init
+  updateRoleFields();
+  (function initStrength(){ bar.style.width = '0%'; })();
+</script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rooftop Gardening Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f2f6f4;
+      color: #333;
+    }
+    header {
+      background: #2e7d32;
+      color: white;
+      padding: 1.2rem 2rem;
+      text-align: center;
+      position: relative;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+    .logout-btn {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    nav {
+      background: #eaf7ea;
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+      gap: 20px;
+    }
+    nav a {
+      text-decoration: none;
+      color: #2e7d32;
+      font-weight: bold;
+    }
+    .hero {
+      text-align: center;
+      padding: 40px 20px;
+      background: #ffffff;
+    }
+    .hero h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: #555;
+    }
+    .section {
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    .section h2 {
+      color: #2e7d32;
+    }
+    .plan-button {
+      display: inline-block;
+      margin: 20px 10px 0;
+      padding: 12px 24px;
+      background-color: #2e7d32;
+      color: white;
+      font-size: 1rem;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+    .plan-button:hover {
+      background-color: #276b2b;
+    }
+    footer {
+      background: #eaf7ea;
+      padding: 20px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🌿 Rooftop Gardening Portal</h1>
+    <button class="logout-btn" onclick="logout()">🚪 Log Out</button>
+  </header>
+
+  <nav>
+    <a href="homepage.html">Home</a>
+    <a href="sunlight_analysis.html">Sunlight Analysis</a>
+    <a href="MonthwiseGardeningPlan.html">Gardening Calendar</a>
+  </nav>
+
+  <div class="hero">
+    <h2>Welcome to Your Green Journey</h2>
+    <p>Plan, grow, and enjoy a rooftop garden perfectly matched to your space and needs.</p>
+  </div>
+
+  <section id="how" class="section">
+    <h2>Ready to Plan?</h2>
+    <p>Simply answer a few questions about your rooftop, sunlight, and preferences — and we’ll generate a personalized gardening guide just for you!</p>
+    <a href="gardening suggestion.html" class="plan-button">🌱 Make Your Plan Here</a>
+    <a href="showsuggestionsfromspecialist.html" class="plan-button">📬 Show Suggestions from Specialist</a>
+  </section>
+
+  <footer>
+    &copy; 2025 Rooftop Gardening Portal — All rights reserved.
+  </footer>
+
+  <script>
+    function logout(){
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>

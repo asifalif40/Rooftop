@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>View & Suggest — Request Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body{font-family:system-ui,Arial,sans-serif;margin:0;background:#f5f7fa}
+    header{background:#1f7a2f;color:#fff;padding:16px 24px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+    header a{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.5);padding:6px 10px;border-radius:8px}
+    .wrap{max-width:960px;margin:24px auto;background:#fff;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.06);padding:22px}
+    h2{margin:0 0 12px}
+    .card{border:1px solid #eaecef;border-radius:10px;padding:14px;background:#fcfffc;margin:8px 0}
+    .label{font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.04em}
+    .val{font-size:16px;font-weight:600;margin-top:4px}
+    .row{display:flex;gap:10px;margin-top:18px}
+    .btn{border:0;padding:10px 16px;border-radius:10px;background:#2e8b57;color:#fff;cursor:pointer}
+    .btn.secondary{background:#e5e7eb;color:#222}
+    .history{margin-top:24px}
+    .entry{border-left:4px solid #2e8b57;background:#f8fff9;padding:12px 14px;margin:10px 0;border-radius:8px}
+    .entry small{color:#6b7280}
+    textarea, select{width:100%;padding:12px;border-radius:10px;border:1px solid #e5e7eb}
+    .qtable{width:100%;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;margin:10px 0}
+    .qtable th,.qtable td{border-bottom:1px solid #f0f2f5;padding:8px 10px}
+    .qtable th{width:55%;background:#f9fdf9}
+    .history-header{display:flex;justify-content:space-between;align-items:center}
+  </style>
+</head>
+<body>
+  <header>
+    <div>Request Details</div>
+    <a href="pendingrequest.html">← Back to List</a>
+  </header>
+
+  <div class="wrap">
+    <h2 id="userName">User: —</h2>
+
+    <!-- Questions Table -->
+    <h3>Submitted Questions & Answers</h3>
+    <div id="qTableHolder"></div>
+
+    <!-- Quick info cards -->
+    <div class="card">
+      <div class="label">Budget</div>
+      <div class="val" id="budget">—</div>
+    </div>
+    <div class="card">
+      <div class="label">Request Date</div>
+      <div class="val" id="requestDate">—</div>
+    </div>
+
+    <!-- Suggestion composer -->
+    <div style="margin-top:22px">
+      <h3>Add Suggestion / Update</h3>
+      <label class="label">Status</label>
+      <select id="statusSel">
+        <option value="New note">New note</option>
+        <option value="Suggested plan sent">Suggested plan sent</option>
+        <option value="Awaiting user reply">Awaiting user reply</option>
+        <option value="Resolved">Resolved</option>
+      </select>
+      <div style="height:8px"></div>
+      <label class="label">Notes</label>
+      <textarea id="suggestion" rows="5" placeholder="Write your suggestion or update…"></textarea>
+      <div class="row">
+        <button class="btn" onclick="saveEntry()">Save to History</button>
+        <button class="btn secondary" onclick="clearDraft()">Clear</button>
+      </div>
+    </div>
+
+    <!-- Full history for THIS user -->
+    <div class="history">
+      <div class="history-header">
+        <h3>History</h3>
+      </div>
+      <div id="historyList">No history yet.</div>
+    </div>
+  </div>
+
+  <script>
+    const id = localStorage.getItem('selectedId');
+    const requests = JSON.parse(localStorage.getItem("requestsDB")) || [];
+
+    if (!id || !requests[id]) {
+      alert("No request selected or not found. Returning to list.");
+      window.location.href = "pendingrequest.html";
+    }
+
+    // ✅ Clear any previous history for this request when page opens
+    localStorage.removeItem(`history_${id}`);
+
+    const request = requests[id];
+    document.getElementById("userName").textContent = `User: ${request.name}`;
+    document.getElementById("budget").textContent = request.budget;
+    document.getElementById("requestDate").textContent = request.requestDate;
+
+    // render Questions table
+    document.getElementById("qTableHolder").innerHTML = `
+      <table class="qtable">
+        <tbody>
+          <tr><th>Roof Area (in square feet)</th><td>${request.roofAreaSqft}</td></tr>
+          <tr><th>Are there tall buildings on the east side of your roof?</th><td>${request.eastObstruction}</td></tr>
+          <tr><th>Are there tall buildings on the south side of your roof?</th><td>${request.southObstruction}</td></tr>
+          <tr><th>Season right now?</th><td>${request.season}</td></tr>
+          <tr><th>Can you water the plants regularly?</th><td>${request.canWater}</td></tr>
+          <tr><th>Do you want vegetables, fruits, or flowers?</th><td>${request.preference}</td></tr>
+          <tr><th>Your Gardening Experience Level</th><td>${request.experience}</td></tr>
+          <tr><th>Approximate Daily Sunlight Duration (in hours)</th><td>${request.sunlightHours}</td></tr>
+        </tbody>
+      </table>
+    `;
+
+    function getHistoryKey() {
+      return `history_${id}`;
+    }
+
+    function renderHistory() {
+      const listEl = document.getElementById('historyList');
+      const histRaw = localStorage.getItem(getHistoryKey());
+      const items = histRaw ? JSON.parse(histRaw) : [];
+      if (!items.length) {
+        listEl.textContent = "No history yet.";
+        return;
+      }
+      listEl.innerHTML = items.map(e => `
+        <div class="entry">
+          <div><strong>${e.status}</strong></div>
+          <div>${e.note ? e.note.replace(/\n/g, '<br>') : ''}</div>
+          <small>${new Date(e.ts).toLocaleString()}</small>
+        </div>
+      `).join('');
+    }
+
+    function saveEntry() {
+      const status = document.getElementById('statusSel').value;
+      const note = document.getElementById('suggestion').value.trim();
+
+      // ✅ Only save the latest entry (overwrite old ones)
+      const items = [{ status, note, ts: Date.now() }];
+      localStorage.setItem(getHistoryKey(), JSON.stringify(items));
+
+      // ✅ Also send to user immediately
+      localStorage.setItem("specialistSuggestionsForUser", JSON.stringify(items));
+
+      document.getElementById('suggestion').value = "";
+      renderHistory();
+
+      // Remove from pending requests
+      let requestsArr = JSON.parse(localStorage.getItem("requestsDB")) || [];
+      requestsArr.splice(id, 1);
+      localStorage.setItem("requestsDB", JSON.stringify(requestsArr));
+
+      // Update pending count
+      localStorage.setItem("pendingCount", requestsArr.length);
+
+      // Increment completed count
+      let completed = parseInt(localStorage.getItem("completedCount") || "0");
+      completed++;
+      localStorage.setItem("completedCount", completed);
+
+      alert("Saved to history and sent to user!");
+      window.location.href = "pendingrequest.html";
+    }
+
+    function clearDraft() {
+      document.getElementById('suggestion').value = "";
+    }
+
+    renderHistory();
+  </script>
+</body>
+</html>

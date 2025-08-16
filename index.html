@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Welcome • Rooftop Gardening</title>
+<style>
+:root{
+  --bg:#f5f8f6;
+  --card:#ffffff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --brand:#2e7d32;
+  --brand-2:#0ea5e9;
+  --accent:#22c55e;
+  --danger:#ef4444;
+  --warning:#f59e0b;
+  --shadow:0 10px 20px rgba(0,0,0,.06);
+  --radius:18px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,system-ui,-apple-system,Roboto,Arial,sans-serif;line-height:1.4}
+a{color:var(--brand-2);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:1100px;margin:0 auto;padding:32px}
+.nav{position:sticky;top:0;background:linear-gradient(90deg,#e8f5e9,#e0f2fe);border-bottom:1px solid #e5e7eb;backdrop-filter:saturate(1.2) blur(12px);z-index:10}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1200px;margin:0 auto}
+.brand{display:flex;gap:10px;align-items:center;font-weight:800}
+.brand .logo{width:32px;height:32px}
+.brand span{font-size:18px;letter-spacing:.3px}
+.nav a.btn,button.btn{background:var(--brand);color:#fff;padding:10px 16px;border-radius:999px;border:none;box-shadow:var(--shadow);cursor:pointer;font-weight:600}
+.btn.secondary{background:#1118270f;color:#111827;border:1px solid #e5e7eb}
+.btn.ghost{background:transparent;border:1px solid #d1d5db;color:#111827}
+.btn.warn{background:var(--warning);color:#111827}
+.btn.danger{background:var(--danger)}
+.btn.small{padding:6px 10px;font-size:12px}
+.grid{display:grid;gap:18px}
+.grid.cards{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+.card h3{margin:0 0 8px 0}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;padding:40px 24px}
+.hero .title{font-size:44px;line-height:1.1;margin:0}
+.hero p{color:var(--muted)}
+.hero-cta{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.kpis .card{display:flex;align-items:center;gap:12px}
+.input,select,textarea{width:100%;padding:12px 14px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;outline:none}
+label{display:block;margin:12px 0 6px 2px;font-weight:600;color:#374151}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.table{width:100%;border-collapse:collapse;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);background:#fff}
+.table th,.table td{padding:12px 14px;border-bottom:1px solid #eef2f7;text-align:left}
+.table th{background:#f8fafc;font-weight:700}
+.badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 10px;font-size:12px;border:1px solid #e5e7eb;background:#fff}
+.badge.green{border-color:#bbf7d0;background:#f0fdf4;color:#14532d}
+.badge.blue{border-color:#bae6fd;background:#eff6ff;color:#0c4a6e}
+.badge.orange{border-color:#fed7aa;background:#fff7ed;color:#7c2d12}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.toolbar .search{flex:1;min-width:220px}
+footer{padding:40px 0;color:var(--muted);text-align:center}
+.bell{position:relative;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:999px;border:1px solid #e5e7eb;background:#fff;cursor:pointer}
+.bell .count{position:absolute;top:-6px;right:-6px;background:var(--danger);color:#fff;border-radius:999px;padding:2px 6px;font-size:11px;font-weight:700;box-shadow:var(--shadow)}
+.notice{padding:12px 14px;border:1px dashed #d1d5db;border-radius:12px;background:#f9fafb}
+.split{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+@media(max-width:920px){
+  .hero{grid-template-columns:1fr}
+  .split{grid-template-columns:1fr}
+  .row{grid-template-columns:1fr}
+}
+</style>
+
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <img class="logo" src="assets/logo.svg" alt="logo"/>
+      <span>Rooftop <span style="color:var(--brand)">Gardening</span></span>
+    </a>
+    <div class="toolbar">
+      <a href="#" class="bell" id="notifBell" title="Notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M14 21a2 2 0 0 1-4 0" stroke="#111827" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M6 8a6 6 0 1 1 12 0c0 4 2 6 2 6H4s2-2 2-6z" stroke="#111827" stroke-width="1.5" fill="none"/>
+        </svg>
+        <span class="count" id="notifCount" style="display:none">0</span>
+      </a>
+      <a class="btn secondary" href="login.html">Login</a>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <h1 style="margin:10px 0 6px">Welcome</h1>
+</div>
+
+<div class="container">
+<section class="hero card">
+  <div>
+    <h1 class="title">Grow smarter on your roof 🌿</h1>
+    <p>Rooftop Gardening helps you plan a thriving rooftop garden with a guided plan generator and a built‑in <strong>Doubt Solve</strong> space where our specialists answer your questions. Start as a User or sign in as a Specialist.</p>
+    <div class="hero-cta">
+      <a class="btn" href="login.html">Get Started</a>
+      <a class="btn secondary" href="homepage.html">Explore as Guest</a>
+    </div>
+    <div class="kpis">
+      <div class="card"><span class="badge green">Auto Plan</span> Predefined suggestions based on your resources</div>
+      <div class="card"><span class="badge blue">Doubt Solve</span> Ask questions & get specialist answers</div>
+      <div class="card"><span class="badge orange">Notifications</span> Alerts when a specialist replies</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>How it works</h3>
+    <ol style="margin-left:18px">
+      <li>Login as User or Specialist</li>
+      <li>User: fill the plan form → get an instant predefined suggestion</li>
+      <li>Specialist: refine requests & answer doubts</li>
+      <li>Everyone: track updates via Notifications</li>
+    </ol>
+  </div>
+</section>
+</div>
+<footer>© 2025 Rooftop Gardening.</footer>
+<script src="assets/app.js"></script>
+</body>
+</html>

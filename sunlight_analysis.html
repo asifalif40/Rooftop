@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sunlight Analysis</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f2f6f4;
+      color: #333;
+    }
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      text-align: center;
+      color: #2e7d32;
+      margin: 0.25rem 0 1rem;
+    }
+    label, select {
+      display: block;
+      margin: 1rem 0 0.5rem;
+    }
+    fieldset {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+    input[type="checkbox"] { margin-right: 6px; }
+    button {
+      background: #4caf50;
+      color: white;
+      padding: 10px 20px;
+      margin-top: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button:hover { background: #388e3c; }
+    .hidden { display: none; }
+    .card {
+      background: #e8f5e9;
+      padding: 1rem;
+      border-left: 6px solid #66bb6a;
+      margin-top: 1.5rem;
+      border-radius: 6px;
+    }
+    .plant-suggestions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .plant-suggestions div {
+      background: #f9fbe7;
+      padding: 1rem;
+      border-radius: 6px;
+    }
+    .summary {
+      margin-top: 1.5rem;
+      background: #fff3cd;
+      border-left: 6px solid #ffc107;
+      padding: 1rem;
+      border-radius: 6px;
+    }
+    .tooltip { font-size: 0.85rem; color: #888; margin-left: 4px; }
+    ul { margin: 0.25rem 0 0; padding-left: 1.2rem; }
+    ul li { margin-bottom: 0.3rem; }
+    .form-footer {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    #warningMsg { color: #d32f2f; font-size: 0.9rem; }
+    .dim { color: #666; font-size: 0.95rem; }
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      background: #2e7d3288;
+      color: white;
+      font-size: 0.75rem;
+      margin-left: 0.35rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌿 Sunlight Analysis</h1>
+
+    <!-- Input Section -->
+    <form id="sunlightForm">
+      <!-- 1. Sunlight Duration -->
+      <label for="sunlightHours">☀️ How many hours of direct sunlight does your rooftop get daily?
+        <span class="tooltip">ⓘ Choose approximate average</span>
+      </label>
+      <select id="sunlightHours" name="sunlightHours">
+        <option value="">--Select--</option>
+        <option value="3">3 hours</option>
+        <option value="6">6 hours</option>
+        <option value="9">9 hours</option>
+      </select>
+
+      <!-- 2. Obstruction (mandatory checkboxes) -->
+
+        <label for="obstructionHeight" style="margin-top:1rem;">Obstruction Height:</label>
+        <select id="obstructionHeight" name="obstructionHeight">
+          <option value="">--Select--</option>
+          <option value="None">None</option>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+      </fieldset>
+
+      <!-- 3. Roof Orientation -->
+      <label for="orientation">🧭 Which direction does your roof mainly face?</label>
+      <select id="orientation" name="orientation">
+        <option value="">--Select--</option>
+        <option value="South">South</option>
+        <option value="East">East</option>
+        <option value="West">West</option>
+        <option value="North">North</option>
+        <option value="Flat">Flat</option>
+      </select>
+
+      <!-- Submit Button + Message -->
+      <div class="form-footer">
+        <button type="button" id="analyzeBtn">Analyze and Suggest</button>
+        <span id="warningMsg"></span>
+      </div>
+    </form>
+
+    <!-- Results Section (Initially Hidden) -->
+    <div id="resultsSection" class="hidden">
+      <h2>📈 Sunlight & Plant Recommendations</h2>
+
+      <!-- Sunlight Result -->
+      <div class="card" id="sunlightResult">
+        <div>
+          🌤️ Your roof receives <strong><span id="sunlightHoursResult">—</span> hours</strong> of sunlight per day.
+          <span class="badge" id="matchedBadge" title="Matches your 1–180 dataset">Matched case</span>
+        </div>
+        <div class="dim" id="obstructionNote">—</div>
+        <div style="margin-top:.5rem;">
+          ✅ Ideal for: <span id="plantExample">—</span>
+        </div>
+      </div>
+
+      <!-- Plant Cards -->
+      <div class="plant-suggestions">
+        <div>
+          <h3>🌟 Case-specific Picks</h3>
+          <ul id="specificPicks"></ul>
+        </div>
+        <div>
+          <h3>☀️ Sun-loving Plants</h3>
+          <ul id="sunLovers"></ul>
+        </div>
+        <div>
+          <h3>🌥️ Shade-tolerant Plants</h3>
+          <ul id="shadeLovers"></ul>
+        </div>
+      </div>
+
+      <!-- Recommendation Summary -->
+      <div class="summary" id="summaryNote">—</div>
+    </div>
+  </div>
+
+  <script>
+    // ========= EXACT 1–180 MAPPING (rule-based, reproduces all cases) =========
+    const CASE_RULES = {
+      3: { // 3 hours
+        Low: {
+          South: ["Spinach (Palong Shak)", "Jamrul (Blackberry)", "Jasmine (Jui)"],
+          North: ["Coriander (Dhonepata)", "Guava (Amrud)", "China Aster (Saikat Phool)"],
+          East:  ["Mint (Pudina)", "Strawberry (Sundari Strawberry)", "Marigold (Genda)"],
+          West:  ["Spinach (Palong Shak)", "Jamrul (Blackberry)", "Jasmine (Jui)"],
+          Flat:  ["Coriander (Dhonepata)", "Guava (Amrud)", "China Aster (Saikat Phool)"]
+        },
+        Medium: {
+          South: ["Mint (Pudina)", "Strawberry (Sundari Strawberry)", "Marigold (Genda)"],
+          North: ["Spinach (Palong Shak)", "Jamrul (Blackberry)", "Jasmine (Jui)"],
+          East:  ["Coriander (Dhonepata)", "Guava (Amrud)", "China Aster (Saikat Phool)"],
+          West:  ["Mint (Pudina)", "Strawberry (Sundari Strawberry)", "Marigold (Genda)"],
+          Flat:  ["Spinach (Palong Shak)", "Jamrul (Blackberry)", "Jasmine (Jui)"]
+        },
+        High: {
+          South: ["Coriander (Dhonepata)", "Guava (Amrud)", "China Aster (Saikat Phool)"],
+          North: ["Mint (Pudina)", "Strawberry (Sundari Strawberry)", "Marigold (Genda)"],
+          East:  ["Spinach (Palong Shak)", "Jamrul (Blackberry)", "Jasmine (Jui)"],
+          West:  ["Coriander (Dhonepata)", "Guava (Amrud)", "China Aster (Saikat Phool)"],
+          Flat:  ["Mint (Pudina)", "Strawberry (Sundari Strawberry)", "Marigold (Genda)"]
+        }
+      },
+      6: { // 6 hours
+        Low: {
+          South: ["Green Chili (Morich)", "Lemon (Lebu)", "Hibiscus (Joba)"],
+          North: ["Eggplant (Begun)", "Guava (Amrud)", "Dahlia"],
+          East:  ["Tomato (Tomato)", "Papaya (Pepe)", "Marigold (Genda)"],
+          West:  ["Green Chili (Morich)", "Lemon (Lebu)", "Hibiscus (Joba)"],
+          Flat:  ["Eggplant (Begun)", "Guava (Amrud)", "Dahlia"]
+        },
+        Medium: {
+          South: ["Tomato (Tomato)", "Papaya (Pepe)", "Marigold (Genda)"],
+          North: ["Green Chili (Morich)", "Lemon (Lebu)", "Hibiscus (Joba)"],
+          East:  ["Eggplant (Begun)", "Guava (Amrud)", "Dahlia"],
+          West:  ["Tomato (Tomato)", "Papaya (Pepe)", "Marigold (Genda)"],
+          Flat:  ["Green Chili (Morich)", "Lemon (Lebu)", "Hibiscus (Joba)"]
+        },
+        High: {
+          South: ["Eggplant (Begun)", "Guava (Amrud)", "Dahlia"],
+          North: ["Tomato (Tomato)", "Papaya (Pepe)", "Marigold (Genda)"],
+          East:  ["Green Chili (Morich)", "Lemon (Lebu)", "Hibiscus (Joba)"],
+          West:  ["Eggplant (Begun)", "Guava (Amrud)", "Dahlia"],
+          Flat:  ["Tomato (Tomato)", "Papaya (Pepe)", "Marigold (Genda)"]
+        }
+      },
+      9: { // 9 hours
+        Low: {
+          South: ["Cucumber (Shosha)", "Mango (Aam)", "Sunflower (Surjomukhi)"],
+          North: ["Ridge Gourd (Dhundul)", "Jackfruit (Kathal)", "Dahlia"],
+          East:  ["Bottle Gourd (Lau)", "Papaya (Pepe)", "Marigold (Genda)"],
+          West:  ["Cucumber (Shosha)", "Mango (Aam)", "Sunflower (Surjomukhi)"],
+          Flat:  ["Ridge Gourd (Dhundul)", "Jackfruit (Kathal)", "Dahlia"]
+        },
+        Medium: {
+          South: ["Bottle Gourd (Lau)", "Papaya (Pepe)", "Marigold (Genda)"],
+          North: ["Cucumber (Shosha)", "Mango (Aam)", "Sunflower (Surjomukhi)"],
+          East:  ["Ridge Gourd (Dhundul)", "Jackfruit (Kathal)", "Dahlia"],
+          West:  ["Bottle Gourd (Lau)", "Papaya (Pepe)", "Marigold (Genda)"],
+          Flat:  ["Cucumber (Shosha)", "Mango (Aam)", "Sunflower (Surjomukhi)"]
+        },
+        High: {
+          South: ["Ridge Gourd (Dhundul)", "Jackfruit (Kathal)", "Dahlia"],
+          North: ["Bottle Gourd (Lau)", "Papaya (Pepe)", "Marigold (Genda)"],
+          East:  ["Cucumber (Shosha)", "Mango (Aam)", "Sunflower (Surjomukhi)"],
+          West:  ["Ridge Gourd (Dhundul)", "Jackfruit (Kathal)", "Dahlia"],
+          Flat:  ["Bottle Gourd (Lau)", "Papaya (Pepe)", "Marigold (Genda)"]
+        }
+      }
+    };
+
+    const HOURS_SUMMARY = {
+      3: "⚠️ Limited sunlight – best for leafy greens or herbs.",
+      6: "✅ Suitable for partial sunlight plants.",
+      9: "✅ Full sunlight – great for sun-loving plants!"
+    };
+
+    const listToHTML = (arr) => (arr && arr.length)
+      ? arr.map(x => `<li>${x}</li>`).join("")
+      : "<li><em>No items</em></li>";
+
+    function buildObstructionNote(sides, height) {
+      if (!sides || sides.length === 0 || height === "None") {
+        return "No major obstruction detected.";
+      }
+      const sideText = `Obstruction on ${sides.join(", ")} side${sides.length > 1 ? "s" : ""}`;
+      return `${sideText} with ${height.toLowerCase()} height.`;
+    }
+
+    function computeCase(hours, height, orientation) {
+      const hInt = Number(hours);
+      const byHour = CASE_RULES[hInt];
+      if (!byHour) return null;
+      const byHeight = byHour[height];
+      if (!byHeight) return null;
+      const trio = byHeight[orientation];
+      if (!trio) return null;
+      return {
+        hours: hInt,
+        obstructionHeight: height,
+        orientation,
+        plants: {
+          vegetable: trio[0],
+          fruit: trio[1],
+          flower: trio[2]
+        },
+        summary: HOURS_SUMMARY[hInt]
+      };
+    }
+
+    function showSuggestions() {
+      const sunHours = document.getElementById("sunlightHours").value;
+      const checkedObstructions = Array.from(document.querySelectorAll('input[name="obstruction"]:checked')).map(el => el.value);
+      const height = document.getElementById("obstructionHeight").value;
+      const orientation = document.getElementById("orientation").value;
+      const warning = document.getElementById("warningMsg");
+      warning.innerText = "";
+
+
+      // Reveal results
+      document.getElementById("resultsSection").classList.remove("hidden");
+
+      // Base texts
+      document.getElementById("sunlightHoursResult").innerText = sunHours;
+      document.getElementById("obstructionNote").innerText = buildObstructionNote(checkedObstructions, height);
+
+      // Case-specific (matches your 1–180 data)
+      const matched = computeCase(sunHours, height, orientation);
+      const badge = document.getElementById("matchedBadge");
+      const specificPicks = document.getElementById("specificPicks");
+      const plantExample = document.getElementById("plantExample");
+      const summaryNote = document.getElementById("summaryNote");
+
+      if (matched) {
+        badge.style.display = "inline-block";
+        specificPicks.innerHTML = listToHTML([
+          matched.plants.vegetable,
+          matched.plants.fruit,
+          matched.plants.flower
+        ]);
+        plantExample.innerText = `${matched.plants.vegetable}, ${matched.plants.fruit}, ${matched.plants.flower}`;
+        summaryNote.innerText = matched.summary;
+      } else {
+        // Fallback (shouldn't trigger with provided mappings)
+        badge.style.display = "none";
+        specificPicks.innerHTML = "<li><em>No exact case match</em></li>";
+        summaryNote.innerText = "—";
+        plantExample.innerText = "—";
+      }
+
+      // General lists by hour (optional, informational)
+      const generalByHour = {
+        3: {
+          sunLovers: [],
+          shadeLovers: ["Spinach (Palong Shak)", "Coriander (Dhonepata)", "Mint (Pudina)", "Lettuce", "Malabar Spinach"]
+        },
+        6: {
+          sunLovers: ["Tomato (Tomato)", "Green Chili (Morich)", "Eggplant (Begun)", "Lemongrass"],
+          shadeLovers: ["Mint (Pudina)", "Spinach (Palong Shak)", "Coriander (Dhonepata)"]
+        },
+        9: {
+          sunLovers: ["Cucumber (Shosha)", "Bottle Gourd (Lau)", "Ridge Gourd (Dhundul)", "Basil", "Marigold (Genda)"],
+          shadeLovers: ["Spinach (Palong Shak)", "Mint (Pudina)"]
+        }
+      }[sunHours] || { sunLovers: [], shadeLovers: [] };
+
+      document.getElementById("sunLovers").innerHTML = listToHTML(generalByHour.sunLovers);
+      document.getElementById("shadeLovers").innerHTML = listToHTML(generalByHour.shadeLovers);
+    }
+
+    document.getElementById("analyzeBtn").addEventListener("click", showSuggestions);
+  </script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pending User Requests</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body{font-family:system-ui,Arial,sans-serif;margin:0;background:#f7faf7}
+    header{background:#1f7a2f;color:#fff;padding:16px 24px;font-weight:700}
+    .wrap{max-width:1150px;margin:24px auto;background:#fff;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.06);padding:16px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:12px 10px;border-bottom:1px solid #e9ecef;text-align:left;vertical-align:top}
+    th{background:#eaf6ea}
+    .btn{border:0;padding:8px 12px;border-radius:8px;background:#2e8b57;color:#fff;cursor:pointer}
+    .btn:hover{filter:brightness(0.95)}
+    .btn.link{background:#eef5ef;color:#14532d}
+    .qtable{width:100%;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;margin:10px 0}
+    .qtable th,.qtable td{border-bottom:1px solid #f0f2f5;padding:8px 10px}
+    .qtable th{width:55%;background:#f9fdf9}
+    .expand-row{background:#fbfffb}
+    .muted{color:#6b7280;font-size:12px}
+  </style>
+</head>
+<body>
+  <header>Pending User Requests</header>
+
+  <div class="wrap">
+    <table id="reqTable">
+      <thead>
+        <tr>
+          <th>👤 User</th>
+          <th>🏠 Roof Area</th>
+          <th>🌞 Sunlight</th>
+          <th>🌿 Preference</th>
+          <th>💰 Budget</th>
+          <th>📅 Date</th>
+          <th>🔎 Questions</th>
+          <th>⚙️ Action</th>
+        </tr>
+      </thead>
+      <tbody id="reqBody"></tbody>
+    </table>
+    <p class="muted">Tip: Click “Show Questions” to see the full questionnaire answers inline.</p>
+  </div>
+
+  <script>
+    const REQUESTS = JSON.parse(localStorage.getItem("requestsDB")) || [];
+    const tbody = document.getElementById('reqBody');
+
+    function qtable(r) {
+      return `
+        <table class="qtable">
+          <tbody>
+            <tr><th>Roof Area (in square feet)</th><td>${r.roofAreaSqft}</td></tr>
+            <tr><th>Are there tall buildings on the east side of your roof?</th><td>${r.eastObstruction}</td></tr>
+            <tr><th>Are there tall buildings on the south side of your roof?</th><td>${r.southObstruction}</td></tr>
+            <tr><th>Season right now?</th><td>${r.season}</td></tr>
+            <tr><th>Can you water the plants regularly?</th><td>${r.canWater}</td></tr>
+            <tr><th>Do you want vegetables, fruits, or flowers?</th><td>${r.preference}</td></tr>
+            <tr><th>Your Gardening Experience Level</th><td>${r.experience}</td></tr>
+            <tr><th>Approximate Daily Sunlight Duration (in hours)</th><td>${r.sunlightHours}</td></tr>
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderTable() {
+      if (REQUESTS.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#888;">No pending requests yet.</td></tr>`;
+      } else {
+        tbody.innerHTML = REQUESTS.map((r, index) => `
+          <tr data-id="${index}">
+            <td>${r.name}</td>
+            <td>${r.roofAreaSqft} sqft</td>
+            <td>${r.sunlightHours} hrs/day</td>
+            <td>${r.preference}</td>
+            <td>${r.budget}</td>
+            <td>${r.requestDate}</td>
+            <td><button class="btn link" onclick="toggleQuestions('${index}')">Show Questions</button></td>
+            <td><button class="btn" onclick="goToViewSuggest('${index}')">View & Suggest</button></td>
+          </tr>
+          <tr id="q_${index}" class="expand-row" style="display:none;">
+            <td colspan="8">${qtable(r)}</td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    function toggleQuestions(id) {
+      const row = document.getElementById(`q_${id}`);
+      const btn = document.querySelector(`tr[data-id="${id}"] .btn.link`);
+      const isHidden = row.style.display === 'none';
+      row.style.display = isHidden ? '' : 'none';
+      if (btn) btn.textContent = isHidden ? 'Hide Questions' : 'Show Questions';
+    }
+
+    function goToViewSuggest(id) {
+      localStorage.setItem('selectedId', id);
+      window.location.href = 'viewsuggest.html';
+    }
+
+    function updatePendingCount() {
+      localStorage.setItem("pendingCount", REQUESTS.length);
+    }
+
+    // Initial render
+    renderTable();
+    updatePendingCount();
+  </script>
+</body>
+</html>

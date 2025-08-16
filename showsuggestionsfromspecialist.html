@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Specialist’s Suggestions</title>
+  <style>
+    :root{
+      --brand:#2e7d32;
+      --ink:#1f2937;
+      --muted:#6b7280;
+      --bg:#f5f7fa;
+      --card:#ffffff;
+      --accent:#10b981;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+    header{
+      background:var(--brand);color:#fff;padding:16px 20px;display:flex;gap:12px;
+      align-items:center;justify-content:space-between;flex-wrap:wrap
+    }
+    header h1{margin:0;font-size:20px}
+    .hdr-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .btn, a.btn{
+      display:inline-flex;align-items:center;gap:8px;border:0;background:#fff;
+      color:#14532d;padding:8px 12px;border-radius:10px;text-decoration:none;cursor:pointer
+    }
+    .wrap{max-width:1000px;margin:20px auto;padding:0 16px}
+    .card{
+      background:var(--card);border:1px solid #e5e7eb;border-radius:12px;padding:16px;
+      box-shadow:0 8px 24px rgba(0,0,0,.06)
+    }
+    .title{margin:0 0 10px;font-size:18px}
+    .entry{border-left:4px solid var(--brand);background:#f8fff9;padding:12px 14px;margin:10px 0;border-radius:8px}
+    .entry small{color:#6b7280}
+    .empty{
+      text-align:center;color:var(--muted);padding:36px;border:1px dashed #d1d5db;border-radius:12px;background:#fff
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌿 Your Specialist’s Suggestions</h1>
+    <div class="hdr-right">
+      <a href="homepage.html" class="btn">← Back to Homepage</a>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div id="missing" class="empty" style="display:none">
+      No suggestions received yet. Please wait for the specialist to send.
+      <div style="height:10px"></div>
+      <a href="homepage.html" class="btn">Go to Homepage</a>
+    </div>
+
+    <section id="content" style="display:none">
+      <article class="card">
+        <h2 class="title">Latest Suggestion</h2>
+        <div id="suggestionsList"></div>
+      </article>
+    </section>
+  </div>
+
+  <script>
+    // Get suggestions sent by specialist
+    const suggestionsRaw = localStorage.getItem("specialistSuggestionsForUser");
+    let suggestions = suggestionsRaw ? JSON.parse(suggestionsRaw) : [];
+
+    // ✅ Keep only the most recent suggestion if multiple exist
+    if (Array.isArray(suggestions) && suggestions.length > 1) {
+      suggestions = [suggestions[0]];
+      localStorage.setItem("specialistSuggestionsForUser", JSON.stringify(suggestions));
+    }
+
+    const missing = document.getElementById("missing");
+    const content = document.getElementById("content");
+    const listEl = document.getElementById("suggestionsList");
+
+    if (!suggestions.length) {
+      // No data found
+      missing.style.display = "block";
+    } else {
+      // Show content
+      content.style.display = "block";
+      listEl.innerHTML = suggestions.map(e => `
+        <div class="entry">
+          <div><strong>${e.status}</strong></div>
+          <div>${e.note ? e.note.replace(/\n/g, '<br>') : ''}</div>
+          <small>${new Date(e.ts).toLocaleString()}</small>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>
